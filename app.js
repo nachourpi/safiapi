@@ -111,15 +111,19 @@ const importCsv = async(csvFileName)=>{
 
             let newTimestamp = dataMinPeriod*1000 + cronoData[i-1].date.getTime()
 
+            let k = Math.floor(timeDifference/dataMinPeriod)
             //We add an OFF record, machine was powered off so no-data 
-            cronoDataWithGaps.push({
-                deviceid:record.deviceid,
-                value:-1,
-                state:STATES.OFF,
-                timestampValue:newTimestamp,
-                date:new Date(newTimestamp),
-                timestamp:admin.firestore.Timestamp.fromDate(new Date(newTimestamp))
-            })
+            for(h=0;h<k;h++){ 
+                cronoDataWithGaps.push({
+                    deviceid:record.deviceid,
+                    value:-1,
+                    state:STATES.OFF,
+                    timestampValue:newTimestamp,
+                    date:new Date(newTimestamp),
+                    timestamp:admin.firestore.Timestamp.fromDate(new Date(newTimestamp))
+                })
+                newTimestamp+=30*1000
+            }
         }
 
         //STATES.OFF will be if there's no data
